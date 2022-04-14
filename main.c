@@ -3,10 +3,11 @@
 typedef struct struct_Move{
     int x;
     int y;
-    struct struct_Move *PossibleMoves[30];
+    struct struct_Move *PossibleMoves[64];
 }Move;
 bool isPossibleMove(int board[10][10], int xpos, int ypos, int player);
 bool hasGameEnded(int board[10][10], int player);
+void makeMove(int board[10][10], int xpos, int ypos, int player);
 int main() {
     int board[10][10]={
             {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
@@ -23,13 +24,21 @@ int main() {
     int xpos;
     int ypos;
     int turn = 1;
+    printf("-------------------------Black Move----------------------------\n");
     while(hasGameEnded(board, turn)==false){
         scanf("%d %d", &xpos, &ypos);
-        isPossibleMove(board, xpos, ypos, turn);
+        if(isPossibleMove(board, xpos, ypos, turn)==true){
+
+        }else{
+            printf("That's not a valid play\n");
+            continue;
+        }
         if(turn==1){
             turn=2;
+            printf("-------------------------White Move----------------------------\n");
         } else{
             turn=1;
+            printf("-------------------------Black Move----------------------------\n");
         }
     }
     return 0;
@@ -140,3 +149,4 @@ bool hasGameEnded(int board[10][10], int player){
     }
     return true;
 }
+void makeMove(int board[10][10], int xpos, int ypos, int player);

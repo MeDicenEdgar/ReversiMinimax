@@ -6,6 +6,7 @@ typedef struct struct_Move{
     struct struct_Move *PossibleMoves[30];
 }Move;
 bool isPossibleMove(int board[10][10], int xpos, int ypos, int player);
+bool hasGameEnded(int board[10][10], int player);
 int main() {
     int board[10][10]={
             {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
@@ -21,8 +22,16 @@ int main() {
     };
     int xpos;
     int ypos;
-    scanf("%d %d", &xpos, &ypos);
-    isPossibleMove(board, xpos, ypos, 1);
+    int turn = 1;
+    while(hasGameEnded(board, turn)==false){
+        scanf("%d %d", &xpos, &ypos);
+        isPossibleMove(board, xpos, ypos, turn);
+        if(turn==1){
+            turn=2;
+        } else{
+            turn=1;
+        }
+    }
     return 0;
 }
 bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
@@ -120,4 +129,14 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
         i = 1;
     }
     return possible;
+}
+bool hasGameEnded(int board[10][10], int player){
+    for(int i = 1; i<9;i++){
+        for(int n = 1; n<9;n++){
+            if(isPossibleMove(board, i, n, player)==true){
+                return false;
+            }
+        }
+    }
+    return true;
 }

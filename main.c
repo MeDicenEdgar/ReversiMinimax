@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include "stdbool.h"
+
 typedef struct struct_Move{
     int x;
     int y;
     int value;
-    struct struct_Move *PossibleMoves[30];
 }Move;
 typedef struct struct_stats{
     int bPieces;
@@ -20,6 +20,7 @@ void copyBoard(int board[10][10], int tempBoard[10][10]);
 Stats checkWinner(int board[10][10]);
 Move minimaxMove(int board[10][10]);
 int getValue(int board[10][10], Move move);
+Move getBestMove(int board[10][10], Move moves[64], int count);
 
 int main() {
     int board[10][10]={
@@ -51,7 +52,6 @@ int main() {
             scanf("%d %d", &xpos, &ypos);
             if (isPossibleMove(board, xpos, ypos, turn)==true){
                 makeMove(board, xpos, ypos, turn);
-                printBoard(board);
             }else{
                 printf("That is not a valid movement\n");
                 continue;
@@ -65,10 +65,10 @@ int main() {
 }
 
 bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
-    if(board[xpos][ypos]!=0) {
+    if(board[xpos][ypos]!=0){
         return false;
     }
-    int i = 0;
+    int i = 1;
     bool possible=false;
     if((board[xpos][ypos-i]!=player)&&(board[xpos][ypos-i]!=0)&&(board[xpos][ypos-i]!=-1)){//Checa las posiciones de la izquierda
         possible=true;
@@ -81,7 +81,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
         }
         i = 1;
         if(possible==true){
-            return possible;
+            return true;
         }
     }
     if((board[xpos][ypos+i]!=player)&&(board[xpos][ypos+i]!=0)&&(board[xpos][ypos+i]!=-1)){//Checa las posiciones de la derecha
@@ -91,12 +91,11 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
                 possible = false;
                 break;
             }
-            printBoard(board);
             i++;
         }
         i = 1;
         if(possible==true){
-            return possible;
+            return true;
         }
     }
     if((board[xpos+i][ypos]!=player)&&(board[xpos+i][ypos]!=0)&&(board[xpos+i][ypos]!=-1)){//Checa las posiciones de abajo
@@ -110,7 +109,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
         }
         i = 1;
         if(possible==true){
-            return possible;
+            return true;
         }
     }
     if((board[xpos-i][ypos]!=player)&&(board[xpos-i][ypos]!=0)&&(board[xpos-i][ypos]!=-1)) {//Checa las posiciones de arriba
@@ -124,7 +123,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
         }
         i = 1;
         if(possible==true){
-            return possible;
+            return true;
         }
     }
     if((board[xpos-i][ypos-i]!=player)&&(board[xpos-i][ypos-i]!=0)&&(board[xpos-i][ypos-i]!=-1)) {//Checa las posiciones de arrba a las izquierda
@@ -138,7 +137,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
         }
         i = 1;
         if(possible==true){
-            return possible;
+            return true;
         }
     }
     if((board[xpos+i][ypos+i]!=player)&&(board[xpos+i][ypos+i]!=0)&&(board[xpos+i][ypos+i]!=-1)) {//Checa las de abajo a la derecha
@@ -152,7 +151,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
         }
         i = 1;
         if(possible==true){
-            return possible;
+            return true;
         }
     }
     if((board[xpos-i][ypos+i]!=player)&&(board[xpos-i][ypos+i]!=0)&&(board[xpos-i][ypos+i]!=-1)) {//Checa las de arriba a la derecha
@@ -166,7 +165,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
         }
         i = 1;
         if(possible==true){
-            return possible;
+            return true;
         }
     }
     if((board[xpos+i][ypos-i]!=player)&&(board[xpos+i][ypos-i]!=0)&&(board[xpos+i][ypos-i]!=-1)) {//Checa las de abajo a la izquierda
@@ -180,7 +179,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
         }
         i = 1;
         if(possible==true){
-            return possible;
+            return true;
         }
     }
     return possible;
@@ -201,18 +200,17 @@ void makeMove(int board[10][10], int xpos, int ypos, int player){
     board[xpos][ypos]=player;
     int i = 1;
     bool possible=false;
-    int count = 0;
     if((board[xpos][ypos-i]!=player)&&(board[xpos][ypos-i]!=0)&&(board[xpos][ypos-i]!=-1)){//Checa las posiciones de la izquierda
         possible=true;
         while (board[xpos][ypos-i]!=player){
-            if(board[xpos][ypos-i]==-1){
+            if(board[xpos][ypos-i]==-1 || board[xpos][ypos-i]==0){
                 possible=false;
                 break;
             }
             i++;
         }
         if(possible==true){
-            for(int n = 1; n<=i; n++){
+            for(int n = 1; n<i; n++){
                 board[xpos][ypos-n]=player;
             }
         }
@@ -222,14 +220,14 @@ void makeMove(int board[10][10], int xpos, int ypos, int player){
     if((board[xpos][ypos+i]!=player)&&(board[xpos][ypos+i]!=0)&&(board[xpos][ypos+i]!=-1)){//Checa las posiciones de la derecha
         possible = true;
         while (board[xpos][ypos + i] != player) {
-            if (board[xpos][ypos + i] == -1) {
+            if (board[xpos][ypos + i] == -1 || board[xpos][ypos + i] == 0) {
                 possible = false;
                 break;
             }
             i++;
         }
         if(possible==true){
-            for(int n = 1; n<=i; n++){
+            for(int n = 1; n<i; n++){
                 board[xpos][ypos+n]=player;
             }
         }
@@ -239,14 +237,14 @@ void makeMove(int board[10][10], int xpos, int ypos, int player){
     if((board[xpos+i][ypos]!=player)&&(board[xpos+i][ypos]!=0)&&(board[xpos+i][ypos]!=-1)){//Checa las posiciones de abajo
         possible = true;
         while (board[xpos+i][ypos] != player) {
-            if (board[xpos+i][ypos] == -1) {
+            if (board[xpos+i][ypos] == -1 || board[xpos+i][ypos] == 0) {
                 possible = false;
                 break;
             }
             i++;
         }
         if(possible==true){
-            for(int n = 1; n<=i; n++){
+            for(int n = 1; n<i; n++){
                 board[xpos+n][ypos]=player;
             }
         }
@@ -256,14 +254,14 @@ void makeMove(int board[10][10], int xpos, int ypos, int player){
     if((board[xpos-i][ypos]!=player)&&(board[xpos-i][ypos]!=0)&&(board[xpos-i][ypos]!=-1)) {//Checa las posiciones de arriba
         possible = true;
         while (board[xpos-i][ypos] != player) {
-            if (board[xpos-i][ypos] == -1) {
+            if (board[xpos-i][ypos] == -1 || board[xpos-i][ypos] == 0) {
                 possible = false;
                 break;
             }
             i++;
         }
         if(possible==true){
-            for(int n = 1; n<=i; n++){
+            for(int n = 1; n<i; n++){
                 board[xpos-n][ypos]=player;
             }
         }
@@ -273,14 +271,14 @@ void makeMove(int board[10][10], int xpos, int ypos, int player){
     if((board[xpos-i][ypos-i]!=player)&&(board[xpos-i][ypos-i]!=0)&&(board[xpos-i][ypos-i]!=-1)) {//Checa las posiciones de arrba a las izquierda
         possible = true;
         while (board[xpos-i][ypos-i] != player) {
-            if (board[xpos-i][ypos-i] == -1) {
+            if (board[xpos-i][ypos-i] == -1 || board[xpos-i][ypos-i] == 0) {
                 possible = false;
                 break;
             }
             i++;
         }
         if(possible==true){
-            for(int n = 1; n<=i; n++){
+            for(int n = 1; n<i; n++){
                 board[xpos-n][ypos-n]=player;
             }
         }
@@ -290,14 +288,14 @@ void makeMove(int board[10][10], int xpos, int ypos, int player){
     if((board[xpos+i][ypos+i]!=player)&&(board[xpos+i][ypos+i]!=0)&&(board[xpos+i][ypos+i]!=-1)) {//Checa las de abajo a la derecha
         possible = true;
         while (board[xpos+i][ypos + i] != player) {
-            if (board[xpos+i][ypos + i] == -1) {
+            if (board[xpos+i][ypos + i] == -1 || board[xpos+i][ypos + i] == 0) {
                 possible = false;
                 break;
             }
             i++;
         }
         if(possible==true){
-            for(int n = 1; n<=i; n++){
+            for(int n = 1; n<i; n++){
                 board[xpos+n][ypos+n]=player;
             }
         }
@@ -307,14 +305,14 @@ void makeMove(int board[10][10], int xpos, int ypos, int player){
     if((board[xpos-i][ypos+i]!=player)&&(board[xpos-i][ypos+i]!=0)&&(board[xpos-i][ypos+i]!=-1)) {//Checa las de arriba a la derecha
         possible = true;
         while (board[xpos-i][ypos + i] != player) {
-            if (board[xpos-i][ypos + i] == -1) {
+            if (board[xpos-i][ypos + i] == -1 || board[xpos-i][ypos + i] == 0) {
                 possible = false;
                 break;
             }
             i++;
         }
         if(possible==true){
-            for(int n = 1; n<=i; n++){
+            for(int n = 1; n<i; n++){
                 board[xpos-n][ypos+n]=player;
             }
         }
@@ -324,14 +322,14 @@ void makeMove(int board[10][10], int xpos, int ypos, int player){
     if((board[xpos+i][ypos-i]!=player)&&(board[xpos+i][ypos-i]!=0)&&(board[xpos+i][ypos-i]!=-1)) {//Checa las de abajo a la izquierda
         possible = true;
         while (board[xpos+i][ypos - i] != player) {
-            if (board[xpos+i][ypos - i] == -1) {
+            if (board[xpos+i][ypos - i] == -1 || board[xpos+i][ypos - i] == 0) {
                 possible = false;
                 break;
             }
             i++;
         }
         if(possible==true){
-            for(int n = 1; n<=i; n++){
+            for(int n = 1; n<i; n++){
                 board[xpos+n][ypos-n]=player;
             }
         }
@@ -408,16 +406,16 @@ void copyBoard(int board[10][10], int tempBoard[10][10]){
     }
 }
 
-int getValue(int board[10][10], Move move){
+int getValue(int board[10][10], Move move) {
     int tempBoard[10][10];
     copyBoard(board, tempBoard);
     makeMove(tempBoard, move.x, move.y, 2);
     Stats current = checkWinner(tempBoard);
     Move moves[64];
     int count = 0;
-    for(int i = 1; i<9; i++){
-        for(int n = 1; n<9; n++){
-            if(isPossibleMove(tempBoard, i, n, 1)==true){
+    for (int i = 1; i < 9; i++) {
+        for (int n = 1; n < 9; n++) {
+            if (isPossibleMove(tempBoard, i, n, 1) == true) {
                 Move moov = {i, n};
                 moves[count] = moov;
                 count++;
@@ -426,24 +424,37 @@ int getValue(int board[10][10], Move move){
     }
     int value = 0;
     int tempBoard2[10][10];
-    for(int i = 0; i<count; i++){
+    for (int i = 0; i < count; i++) {
         copyBoard(tempBoard, tempBoard2);
         makeMove(tempBoard2, moves[i].x, moves[i].y, 1);
         Stats tempStats = checkWinner(tempBoard2);
         int tempvalue = tempStats.wPieces - current.wPieces;
-        if(tempvalue<value){
-            value=tempvalue;
+        if (tempvalue < value) {
+            value = tempvalue;
         }
     }
     return value;
-
 }
-
+Move getBestMove(int board[10][10], Move moves[64], int count){
+    int currentValue;
+    Move bestMove={.x=-1, .y=-1, .value=-100};
+    int i = 0;
+    Move moov;
+    while(i<count){
+        moov = moves[i];
+        currentValue = getValue(board, moov);
+        if(currentValue>bestMove.value){
+            bestMove.x = moves[i].x;
+            bestMove.y = moves[i].y;
+            bestMove.value = currentValue;
+        }
+        i++;
+    }
+    return bestMove;
+}
 Move minimaxMove(int board[10][10]){
     Move moves[64];
     Move bestMove;
-    bestMove.value=-100;
-    Stats current = checkWinner(board);
     int count = 0;
     for(int i = 1; i<9; i++){
         for(int n = 1; n<9; n++){
@@ -454,16 +465,6 @@ Move minimaxMove(int board[10][10]){
             }
         }
     }
-    int currentValue;
-    int tempBoard[10][10];
-    for(int i = 0; i<count; i++) {
-        Move moov = moves[i];
-        currentValue = getValue(board, moov);
-        if(currentValue>bestMove.value){
-            bestMove.x=moves[i].x;
-            bestMove.y=moves[i].y;
-            bestMove.value=currentValue;
-        }
-    }
+    bestMove = getBestMove(board, moves, count);
     return bestMove;
 }

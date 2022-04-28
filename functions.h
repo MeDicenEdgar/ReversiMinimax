@@ -8,7 +8,156 @@ typedef struct struct_stats{
     int wPieces;
     char Winner[7];
 }Stats;
+typedef struct struct_available{
+    bool up;
+    bool down;
+    bool left;
+    bool right;
+    bool upLeft;
+    bool upRight;
+    bool downLeft;
+    bool downRight;
+    bool possible;
+}Available;
 
+int changeTurn(int turn){
+    if(turn==1){
+        return 2;
+    }
+    if(turn==2){
+        return 1;
+    }
+    return 1;
+}
+
+Available possibleMoves(int board[10][10], int xpos, int ypos, int player){
+    Available isIt={false, false, false, false, false, false, false, false, false};
+    if(board[xpos][ypos]!=0){
+        return isIt;
+    }
+    int i = 1;
+    bool possible=false;
+    if((board[xpos][ypos-i]!=player)&&(board[xpos][ypos-i]!=0)&&(board[xpos][ypos-i]!=-1)){//Checa las posiciones de la izquierda
+        possible=true;
+        while (board[xpos][ypos-i]!=player){
+            if(board[xpos][ypos-i]==-1 || board[xpos][ypos-i]==0){
+                possible=false;
+                break;
+            }
+            i++;
+        }
+        i = 1;
+        if(possible==true){
+            isIt.possible=true;
+            isIt.left=true;
+        }
+    }
+    if((board[xpos][ypos+i]!=player)&&(board[xpos][ypos+i]!=0)&&(board[xpos][ypos+i]!=-1)){//Checa las posiciones de la derecha
+        possible = true;
+        while (board[xpos][ypos + i] != player) {
+            if (board[xpos][ypos + i] == -1 || board[xpos][ypos + i] == 0) {
+                possible = false;
+                break;
+            }
+            i++;
+        }
+        i = 1;
+        if(possible==true){
+            isIt.possible=true;
+            isIt.right=true;
+        }
+    }
+    if((board[xpos+i][ypos]!=player)&&(board[xpos+i][ypos]!=0)&&(board[xpos+i][ypos]!=-1)){//Checa las posiciones de abajo
+        possible = true;
+        while (board[xpos+i][ypos] != player) {
+            if (board[xpos+i][ypos] == -1 || board[xpos+i][ypos] == 0) {
+                possible = false;
+                break;
+            }
+            i++;
+        }
+        i = 1;
+        if(possible==true){
+            isIt.possible=true;
+            isIt.down=true;
+        }
+    }
+    if((board[xpos-i][ypos]!=player)&&(board[xpos-i][ypos]!=0)&&(board[xpos-i][ypos]!=-1)) {//Checa las posiciones de arriba
+        possible = true;
+        while (board[xpos-i][ypos] != player) {
+            if (board[xpos-i][ypos] == -1 || board[xpos-i][ypos] == 0) {
+                possible = false;
+                break;
+            }
+            i++;
+        }
+        i = 1;
+        if(possible==true){
+            isIt.possible=true;
+            isIt.up=true;
+        }
+    }
+    if((board[xpos-i][ypos-i]!=player)&&(board[xpos-i][ypos-i]!=0)&&(board[xpos-i][ypos-i]!=-1)) {//Checa las posiciones de arrba a las izquierda
+        possible = true;
+        while (board[xpos-i][ypos-i] != player) {
+            if (board[xpos-i][ypos-i] == -1 || board[xpos-i][ypos-i] == 0) {
+                possible = false;
+                break;
+            }
+            i++;
+        }
+        i = 1;
+        if(possible==true){
+            isIt.possible=true;
+            isIt.upLeft=true;
+        }
+    }
+    if((board[xpos+i][ypos+i]!=player)&&(board[xpos+i][ypos+i]!=0)&&(board[xpos+i][ypos+i]!=-1)) {//Checa las de abajo a la derecha
+        possible = true;
+        while (board[xpos+i][ypos + i] != player) {
+            if (board[xpos+i][ypos + i] == -1 || board[xpos+i][ypos + i] == 0) {
+                possible = false;
+                break;
+            }
+            i++;
+        }
+        i = 1;
+        if(possible==true){
+            isIt.possible=true;
+            isIt.downRight=true;
+        }
+    }
+    if((board[xpos-i][ypos+i]!=player)&&(board[xpos-i][ypos+i]!=0)&&(board[xpos-i][ypos+i]!=-1)) {//Checa las de arriba a la derecha
+        possible = true;
+        while (board[xpos-i][ypos + i] != player) {
+            if (board[xpos-i][ypos + i] == -1 || board[xpos-i][ypos + i] == 0) {
+                possible = false;
+                break;
+            }
+            i++;
+        }
+        i = 1;
+        if(possible==true){
+            isIt.possible=true;
+            isIt.upRight=true;
+        }
+    }
+    if((board[xpos+i][ypos-i]!=player)&&(board[xpos+i][ypos-i]!=0)&&(board[xpos+i][ypos-i]!=-1)) {//Checa las de abajo a la izquierda
+        possible = true;
+        while (board[xpos+i][ypos - i] != player) {
+            if (board[xpos+i][ypos - i] == -1 || board[xpos+i][ypos - i] == 0) {
+                possible = false;
+                break;
+            }
+            i++;
+        }
+        if(possible==true){
+            isIt.possible=true;
+            isIt.downLeft=true;
+        }
+    }
+    return isIt;
+}
 
 bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
     if(board[xpos][ypos]!=0){
@@ -123,7 +272,6 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
             }
             i++;
         }
-        i = 1;
         if(possible==true){
             return true;
         }
@@ -131,156 +279,80 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
     return possible;
 }
 
-bool hasGameEnded(int board[10][10], int player){
+int hasGameEnded(int board[10][10], int player, int check){
     for(int i = 1; i<9;i++){
         for(int n = 1; n<9;n++){
             if(isPossibleMove(board, i, n, player)==true){
-                return false;
+                return 0;
             }
         }
     }
-    return true;
+    if(check == 0){
+        if(hasGameEnded(board, changeTurn(player), 1)==0){
+            return 2;
+        }
+    }
+    return 3;
 }
 
-void makeMove(int board[10][10], int xpos, int ypos, int player){
+void makeMove(int board[10][10], int xpos, int ypos, int player, Available available){
     board[xpos][ypos]=player;
     int i = 1;
-    bool possible=false;
-    if((board[xpos][ypos-i]!=player)&&(board[xpos][ypos-i]!=0)&&(board[xpos][ypos-i]!=-1)){//Checa las posiciones de la izquierda
-        possible=true;
-        while (board[xpos][ypos-i]!=player){
-            if(board[xpos][ypos-i]==-1 || board[xpos][ypos-i]==0){
-                possible=false;
-                break;
-            }
+    if(available.left==true){
+        while(board[xpos][ypos-i]!= player){
+            board[xpos][ypos-i]=player;
             i++;
         }
-        if(possible==true){
-            for(int n = 1; n<i; n++){
-                board[xpos][ypos-n]=player;
-            }
-        }
         i = 1;
-        possible=false;
     }
-    if((board[xpos][ypos+i]!=player)&&(board[xpos][ypos+i]!=0)&&(board[xpos][ypos+i]!=-1)){//Checa las posiciones de la derecha
-        possible = true;
-        while (board[xpos][ypos + i] != player) {
-            if (board[xpos][ypos + i] == -1 || board[xpos][ypos + i] == 0) {
-                possible = false;
-                break;
-            }
+    if(available.right==true){
+        while(board[xpos][ypos+i]!= player){
+            board[xpos][ypos+i]=player;
             i++;
         }
-        if(possible==true){
-            for(int n = 1; n<i; n++){
-                board[xpos][ypos+n]=player;
-            }
-        }
         i = 1;
-        possible=false;
     }
-    if((board[xpos+i][ypos]!=player)&&(board[xpos+i][ypos]!=0)&&(board[xpos+i][ypos]!=-1)){//Checa las posiciones de abajo
-        possible = true;
-        while (board[xpos+i][ypos] != player) {
-            if (board[xpos+i][ypos] == -1 || board[xpos+i][ypos] == 0) {
-                possible = false;
-                break;
-            }
+    if(available.down==true){
+        while(board[xpos+i][ypos]!= player) {
+            board[xpos + i][ypos] = player;
             i++;
         }
-        if(possible==true){
-            for(int n = 1; n<i; n++){
-                board[xpos+n][ypos]=player;
-            }
-        }
         i = 1;
-        possible=false;
     }
-    if((board[xpos-i][ypos]!=player)&&(board[xpos-i][ypos]!=0)&&(board[xpos-i][ypos]!=-1)) {//Checa las posiciones de arriba
-        possible = true;
-        while (board[xpos-i][ypos] != player) {
-            if (board[xpos-i][ypos] == -1 || board[xpos-i][ypos] == 0) {
-                possible = false;
-                break;
-            }
+    if(available.up==true){
+        while(board[xpos-i][ypos]!= player){
+            board[xpos-i][ypos]=player;
             i++;
         }
-        if(possible==true){
-            for(int n = 1; n<i; n++){
-                board[xpos-n][ypos]=player;
-            }
-        }
         i = 1;
-        possible=false;
     }
-    if((board[xpos-i][ypos-i]!=player)&&(board[xpos-i][ypos-i]!=0)&&(board[xpos-i][ypos-i]!=-1)) {//Checa las posiciones de arrba a las izquierda
-        possible = true;
-        while (board[xpos-i][ypos-i] != player) {
-            if (board[xpos-i][ypos-i] == -1 || board[xpos-i][ypos-i] == 0) {
-                possible = false;
-                break;
-            }
+    if(available.upLeft==true){
+        while(board[xpos-i][ypos-i]!= player){
+            board[xpos-i][ypos-i]=player;
             i++;
         }
-        if(possible==true){
-            for(int n = 1; n<i; n++){
-                board[xpos-n][ypos-n]=player;
-            }
-        }
         i = 1;
-        possible=false;
     }
-    if((board[xpos+i][ypos+i]!=player)&&(board[xpos+i][ypos+i]!=0)&&(board[xpos+i][ypos+i]!=-1)) {//Checa las de abajo a la derecha
-        possible = true;
-        while (board[xpos+i][ypos + i] != player) {
-            if (board[xpos+i][ypos + i] == -1 || board[xpos+i][ypos + i] == 0) {
-                possible = false;
-                break;
-            }
+    if(available.downRight==true){
+        while(board[xpos+i][ypos+i]!= player){
+            board[xpos+i][ypos+i]=player;
             i++;
         }
-        if(possible==true){
-            for(int n = 1; n<i; n++){
-                board[xpos+n][ypos+n]=player;
-            }
-        }
         i = 1;
-        possible=false;
     }
-    if((board[xpos-i][ypos+i]!=player)&&(board[xpos-i][ypos+i]!=0)&&(board[xpos-i][ypos+i]!=-1)) {//Checa las de arriba a la derecha
-        possible = true;
-        while (board[xpos-i][ypos + i] != player) {
-            if (board[xpos-i][ypos + i] == -1 || board[xpos-i][ypos + i] == 0) {
-                possible = false;
-                break;
-            }
+    if(available.upRight==true){
+        while(board[xpos-i][ypos+i]!= player){
+            board[xpos-i][ypos+i]=player;
             i++;
         }
-        if(possible==true){
-            for(int n = 1; n<i; n++){
-                board[xpos-n][ypos+n]=player;
-            }
-        }
         i = 1;
-        possible=false;
     }
-    if((board[xpos+i][ypos-i]!=player)&&(board[xpos+i][ypos-i]!=0)&&(board[xpos+i][ypos-i]!=-1)) {//Checa las de abajo a la izquierda
-        possible = true;
-        while (board[xpos+i][ypos - i] != player) {
-            if (board[xpos+i][ypos - i] == -1 || board[xpos+i][ypos - i] == 0) {
-                possible = false;
-                break;
-            }
+    if(available.downLeft==true){
+        while(board[xpos+i][ypos-i]!= player){
+            board[xpos+i][ypos-i]=player;
             i++;
         }
-        if(possible==true){
-            for(int n = 1; n<i; n++){
-                board[xpos+n][ypos-n]=player;
-            }
-        }
         i = 1;
-        possible=false;
     }
 }
 
@@ -355,7 +427,7 @@ void copyBoard(int board[10][10], int tempBoard[10][10]){
 int getValue(int board[10][10], Move move) {
     int tempBoard[10][10];
     copyBoard(board, tempBoard);
-    makeMove(tempBoard, move.x, move.y, 2);
+    makeMove(tempBoard, move.x, move.y, 2, possibleMoves(tempBoard, move.x, move.y, 2));
     Stats current = checkWinner(tempBoard);
     Move moves[64];
     int count = 0;
@@ -372,7 +444,7 @@ int getValue(int board[10][10], Move move) {
     int tempBoard2[10][10];
     for (int i = 0; i < count; i++) {
         copyBoard(tempBoard, tempBoard2);
-        makeMove(tempBoard2, moves[i].x, moves[i].y, 1);
+        makeMove(tempBoard2, moves[i].x, moves[i].y, 1, possibleMoves(tempBoard2, move.x, move.y, 2));
         Stats tempStats = checkWinner(tempBoard2);
         int tempvalue = tempStats.wPieces - current.wPieces;
         if (tempvalue < value) {
@@ -381,6 +453,7 @@ int getValue(int board[10][10], Move move) {
     }
     return value;
 }
+
 Move getBestMove(int board[10][10], Move moves[64], int count){
     int currentValue;
     Move bestMove={.x=-1, .y=-1, .value=-100};
@@ -398,6 +471,7 @@ Move getBestMove(int board[10][10], Move moves[64], int count){
     }
     return bestMove;
 }
+
 Move minimaxMove(int board[10][10]){
     Move moves[64];
     Move bestMove;
@@ -413,5 +487,124 @@ Move minimaxMove(int board[10][10]){
     }
     bestMove = getBestMove(board, moves, count);
     return bestMove;
+}
+
+int mainGame(int board[10][10], int turn, int xpos, int ypos){
+    int state = hasGameEnded(board, turn, 0);
+    printf("State: %i\n", state);
+    if(state==2){
+        return changeTurn(turn);
+    }
+    if(state!=3) {
+        if (turn == 2) {
+            Move move = minimaxMove(board);
+            makeMove(board, move.x, move.y, 2, possibleMoves(board, move.x, move.y, 2));
+            printBoard(board);
+            turn = changeTurn(turn);
+        }else {
+            makeMove(board, xpos, ypos, turn, possibleMoves(board, xpos, ypos, turn));
+            printBoard(board);
+            turn = changeTurn(turn);
+        }
+    }
+    if(state==3){
+        Stats stats = checkWinner(board);
+        printBoard(board);
+        printf("The game has ended \nWhite has %i pieces\nBlack has %i pieces\nThe winner is %s", stats.wPieces,
+               stats.bPieces, stats.Winner);
+        return 3;
+    }
+    return turn;
+}
+
+void drawBoard(int width, int height){
+    Color color = WHITE;
+    width-=200;
+    height-=200;
+    int hGap = height/8;
+    int wGap = width/8;
+    DrawRectangle(100, 100, width-4, height-4, DARKGREEN);
+    for(int i = 0; i<=8; i++){
+        int wPos = (wGap*i)+100;
+        int hPos = (hGap*i)+100;
+        DrawLine(wPos, 100, wPos, height+96, color);
+        DrawLine(100, hPos, width+96, hPos, color);
+    }
+
+}
+
+int mouseValidation(int board[10][10],int y, int x, int height, int width){
+    int hgap = (height-200)/8;
+    int wgap = (width-200)/8;
+    if((x>100 && x<height-100)&&(y>100 && y<width-100)){
+        x = ((x-100)/wgap)+1;
+        y = ((y-100)/hgap)+1;
+        printf("%d %d\n", x, y);
+        if(isPossibleMove(board, x, y, 1)){
+            return mainGame(board, 1, x, y);
+        } else{
+            return 1;
+        }
+
+    } else{
+        return 1;
+    }
+}
+
+void drawPieces(int board[10][10], int width, int height){
+    int hgap = (height-200)/8;
+    int wgap = (width-200)/8;
+    int xpos;
+    int ypos;
+    for(int i = 1; i<9; i++){
+        for(int n = 1; n<9; n++){
+            if(board[i][n]==1){
+                xpos = ((wgap*(n-1))+wgap/2)+100;
+                ypos = ((hgap*(i-1))+hgap/2)+100;
+                DrawCircle(xpos, ypos, (hgap/2)-7, BLACK);
+            }
+            if(board[i][n]==2){
+                xpos = ((wgap*(n-1))+wgap/2)+100;
+                ypos = ((hgap*(i-1))+hgap/2)+100;
+                DrawCircle(xpos, ypos, (hgap/2)-7, WHITE);
+            }
+        }
+    }
+}
+void endgame(int board[10][10], Stats stats){
+    if(stats.bPieces>stats.wPieces){
+        for(int i = 1; i<9; i++){
+            for(int n = 1; n<9; n++){
+                board[i][n]=1;
+            }
+        }
+    }else if(stats.bPieces<stats.wPieces){
+        for(int i = 1; i<9; i++){
+            for(int n = 1; n<9; n++){
+                board[i][n]=2;
+            }
+        }
+    } else{
+        for(int i = 1; i<9; i++){
+            for(int n = 1; n<9; n++){
+                board[i][n]=0;
+            }
+        }
+    }
+}
+void drawAvailableMoves(int board[10][10], int width, int height){
+    int wGap = (width-200)/8;
+    int hGap = (height-200)/8;
+    int xpos;
+    int ypos;
+    for(int i = 1; i<9; i++){
+        for(int n = 1; n<9; n++){
+            if(isPossibleMove(board, i, n, 1)==true){
+                xpos = (wGap*(n-1))+100;
+                ypos = (hGap*(i-1))+100;
+                DrawRectangle(xpos, ypos, wGap-2, hGap-2, GREEN);
+            }
+        }
+    }
 }
 

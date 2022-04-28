@@ -352,7 +352,6 @@ void makeMove(int board[10][10], int xpos, int ypos, int player, Available avail
             board[xpos+i][ypos-i]=player;
             i++;
         }
-        i = 1;
     }
 }
 

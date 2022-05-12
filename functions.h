@@ -1,14 +1,14 @@
-typedef struct struct_Move{
+typedef struct struct_Move{//This struct represents moves
     int x;
     int y;
     int value;
 }Move;
-typedef struct struct_stats{
+typedef struct struct_stats{//This struct represents the current stats
     int bPieces;
     int wPieces;
     char Winner[7];
 }Stats;
-typedef struct struct_available{
+typedef struct struct_available{//This is a validation struct for possible moves in the board
     bool up;
     bool down;
     bool left;
@@ -20,7 +20,7 @@ typedef struct struct_available{
     bool possible;
 }Available;
 
-int changeTurn(int turn){
+int changeTurn(int turn){//Simple function that changes the turn
     if(turn==1){
         return 2;
     }
@@ -30,29 +30,29 @@ int changeTurn(int turn){
     return 1;
 }
 
-Available possibleMoves(int board[10][10], int xpos, int ypos, int player){
-    Available isIt={false, false, false, false, false, false, false, false, false};
+Available possibleMoves(int board[10][10], int xpos, int ypos, int player){         //Unlike the one that only gets if the move is possible
+    Available isIt={false, false, false, false, false, false, false, false, false}; //returns the directions in which is possible
     if(board[xpos][ypos]!=0){
         return isIt;
     }
     int i = 1;
     bool possible=false;
-    if((board[xpos][ypos-i]!=player)&&(board[xpos][ypos-i]!=0)&&(board[xpos][ypos-i]!=-1)){//Checa las posiciones de la izquierda
+    if((board[xpos][ypos-i]!=player)&&(board[xpos][ypos-i]!=0)&&(board[xpos][ypos-i]!=-1)){//Checks left for a enemy piece
         possible=true;
-        while (board[xpos][ypos-i]!=player){
+        while (board[xpos][ypos-i]!=player){//if true, checks for a piece that closes the play
             if(board[xpos][ypos-i]==-1 || board[xpos][ypos-i]==0){
-                possible=false;
+                possible=false;//If there is no such piece, is false
                 break;
             }
             i++;
         }
         i = 1;
         if(possible==true){
-            isIt.possible=true;
+            isIt.possible=true;//Returns the direction in which is possible
             isIt.left=true;
         }
     }
-    if((board[xpos][ypos+i]!=player)&&(board[xpos][ypos+i]!=0)&&(board[xpos][ypos+i]!=-1)){//Checa las posiciones de la derecha
+    if((board[xpos][ypos+i]!=player)&&(board[xpos][ypos+i]!=0)&&(board[xpos][ypos+i]!=-1)){//Checks right
         possible = true;
         while (board[xpos][ypos + i] != player) {
             if (board[xpos][ypos + i] == -1 || board[xpos][ypos + i] == 0) {
@@ -532,6 +532,20 @@ void drawBoard(int width, int height){
 
 }
 
+void currentTurn(int turn, int height, int width){
+    DrawRectangle(width-185, height-63, 185, 75, GRAY);
+    DrawLine(width-185, height-63, width-185, height, WHITE);
+    DrawLine(width-185, height-63, width, height-63, WHITE);
+    DrawText("TURN:", width-174, height-49, 38, WHITE);
+    if(turn==1){
+        DrawCircle(width-30, height-33, 23, BLACK);
+    } else if(turn == 2){
+        DrawCircle(width-30, height-33, 23, WHITE);
+    }else{
+        DrawCircle(width-30, height-33, 23, LIME);
+    }
+}
+
 int mouseValidation(int board[10][10],int y, int x, int height, int width){
     int hgap = (height-200)/8;
     int wgap = (width-200)/8;
@@ -570,19 +584,23 @@ void drawPieces(int board[10][10], int width, int height){
         }
     }
 }
-void endgame(int board[10][10], Stats stats){
+int endgame(int board[10][10], Stats stats, int width, int height){
     if(stats.bPieces>stats.wPieces){
         for(int i = 1; i<9; i++){
             for(int n = 1; n<9; n++){
                 board[i][n]=1;
             }
+
         }
+        return 1;
     }else if(stats.bPieces<stats.wPieces){
         for(int i = 1; i<9; i++){
             for(int n = 1; n<9; n++){
                 board[i][n]=2;
             }
         }
+        return 2;
+
     } else{
         for(int i = 1; i<9; i++){
             for(int n = 1; n<9; n++){
@@ -590,7 +608,9 @@ void endgame(int board[10][10], Stats stats){
             }
         }
     }
+    return 3;
 }
+
 void drawAvailableMoves(int board[10][10], int width, int height){
     int wGap = (width-200)/8;
     int hGap = (height-200)/8;
@@ -606,4 +626,29 @@ void drawAvailableMoves(int board[10][10], int width, int height){
         }
     }
 }
+void displayNumberOfPieces(int board[10][10], int screenWidth, int screenHeight){
+    Stats stats = checkWinner(board);
+    int radius = (screenWidth-500)/8+7;
+    int pos = radius+10;
+    char current[5];
+    DrawRectangle(0, 0, screenWidth-350, radius*2+20, GRAY);
+    DrawCircle(pos, pos, radius, WHITE);
+    DrawCircle(pos*5, pos, radius, BLACK);
+    sprintf(current, "x %d", stats.wPieces);
+    DrawText(current, pos+radius+10, pos, 30, WHITE);
+    sprintf(current, "x %d", stats.bPieces);
+    DrawText(current, pos*5+radius+10, pos, 30, BLACK);
+}
+void DrawEndgame(int winner, int width, int height){
+    if (winner ==1){
+        DrawRectangle(width/2-85, height/2-50, 170, 100, BLACK);
+        DrawText("Black Wins!", width/2 -70, height/2 -15, 27, WHITE);
+    }else if(winner == 2){
+        DrawRectangle(width/2-85, height/2-50, 170, 100, WHITE);
+        DrawText("White Wins!", width/2 -70, height/2 -15, 27, BLACK);
+    }else if (winner == 3){
+        DrawRectangle(width/2-85, height/2-50, 170, 100, GRAY);
+        DrawText("No One Wins!", width/2 -70, height/2 -15, 24, WHITE);
+    }
 
+}

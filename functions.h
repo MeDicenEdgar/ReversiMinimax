@@ -6,9 +6,8 @@ typedef struct struct_Move{//This struct represents moves
 typedef struct struct_stats{//This struct represents the current stats
     int bPieces;
     int wPieces;
-    char Winner[7];
 }Stats;
-typedef struct struct_available{//This is a validation struct for possible moves in the board
+typedef struct struct_available{//This is a validation struct for possible moves in the board, used to make the moves
     bool up;
     bool down;
     bool left;
@@ -20,7 +19,7 @@ typedef struct struct_available{//This is a validation struct for possible moves
     bool possible;
 }Available;
 
-int changeTurn(int turn){//Simple function that changes the turn
+int changeTurn(int turn){//Simple function that changes the turn, makes my life easier
     if(turn==1){
         return 2;
     }
@@ -32,7 +31,7 @@ int changeTurn(int turn){//Simple function that changes the turn
 
 Available possibleMoves(int board[10][10], int xpos, int ypos, int player){         //Unlike the one that only gets if the move is possible
     Available isIt={false, false, false, false, false, false, false, false, false}; //returns the directions in which is possible
-    if(board[xpos][ypos]!=0){
+    if(board[xpos][ypos]!=0){//If the space is not available, instantly returns the false
         return isIt;
     }
     int i = 1;
@@ -48,7 +47,7 @@ Available possibleMoves(int board[10][10], int xpos, int ypos, int player){     
         }
         i = 1;
         if(possible==true){
-            isIt.possible=true;//Returns the direction in which is possible
+            isIt.possible=true;//Returns the direction in which is possible, and mark the move as possible
             isIt.left=true;
         }
     }
@@ -67,7 +66,7 @@ Available possibleMoves(int board[10][10], int xpos, int ypos, int player){     
             isIt.right=true;
         }
     }
-    if((board[xpos+i][ypos]!=player)&&(board[xpos+i][ypos]!=0)&&(board[xpos+i][ypos]!=-1)){//Checa las posiciones de abajo
+    if((board[xpos+i][ypos]!=player)&&(board[xpos+i][ypos]!=0)&&(board[xpos+i][ypos]!=-1)){//Checks down
         possible = true;
         while (board[xpos+i][ypos] != player) {
             if (board[xpos+i][ypos] == -1 || board[xpos+i][ypos] == 0) {
@@ -82,7 +81,7 @@ Available possibleMoves(int board[10][10], int xpos, int ypos, int player){     
             isIt.down=true;
         }
     }
-    if((board[xpos-i][ypos]!=player)&&(board[xpos-i][ypos]!=0)&&(board[xpos-i][ypos]!=-1)) {//Checa las posiciones de arriba
+    if((board[xpos-i][ypos]!=player)&&(board[xpos-i][ypos]!=0)&&(board[xpos-i][ypos]!=-1)) {//Checks up
         possible = true;
         while (board[xpos-i][ypos] != player) {
             if (board[xpos-i][ypos] == -1 || board[xpos-i][ypos] == 0) {
@@ -97,7 +96,7 @@ Available possibleMoves(int board[10][10], int xpos, int ypos, int player){     
             isIt.up=true;
         }
     }
-    if((board[xpos-i][ypos-i]!=player)&&(board[xpos-i][ypos-i]!=0)&&(board[xpos-i][ypos-i]!=-1)) {//Checa las posiciones de arrba a las izquierda
+    if((board[xpos-i][ypos-i]!=player)&&(board[xpos-i][ypos-i]!=0)&&(board[xpos-i][ypos-i]!=-1)) {//Checks up left
         possible = true;
         while (board[xpos-i][ypos-i] != player) {
             if (board[xpos-i][ypos-i] == -1 || board[xpos-i][ypos-i] == 0) {
@@ -112,7 +111,7 @@ Available possibleMoves(int board[10][10], int xpos, int ypos, int player){     
             isIt.upLeft=true;
         }
     }
-    if((board[xpos+i][ypos+i]!=player)&&(board[xpos+i][ypos+i]!=0)&&(board[xpos+i][ypos+i]!=-1)) {//Checa las de abajo a la derecha
+    if((board[xpos+i][ypos+i]!=player)&&(board[xpos+i][ypos+i]!=0)&&(board[xpos+i][ypos+i]!=-1)) {//Checks down  right
         possible = true;
         while (board[xpos+i][ypos + i] != player) {
             if (board[xpos+i][ypos + i] == -1 || board[xpos+i][ypos + i] == 0) {
@@ -127,7 +126,7 @@ Available possibleMoves(int board[10][10], int xpos, int ypos, int player){     
             isIt.downRight=true;
         }
     }
-    if((board[xpos-i][ypos+i]!=player)&&(board[xpos-i][ypos+i]!=0)&&(board[xpos-i][ypos+i]!=-1)) {//Checa las de arriba a la derecha
+    if((board[xpos-i][ypos+i]!=player)&&(board[xpos-i][ypos+i]!=0)&&(board[xpos-i][ypos+i]!=-1)) {//Checks up right
         possible = true;
         while (board[xpos-i][ypos + i] != player) {
             if (board[xpos-i][ypos + i] == -1 || board[xpos-i][ypos + i] == 0) {
@@ -142,7 +141,7 @@ Available possibleMoves(int board[10][10], int xpos, int ypos, int player){     
             isIt.upRight=true;
         }
     }
-    if((board[xpos+i][ypos-i]!=player)&&(board[xpos+i][ypos-i]!=0)&&(board[xpos+i][ypos-i]!=-1)) {//Checa las de abajo a la izquierda
+    if((board[xpos+i][ypos-i]!=player)&&(board[xpos+i][ypos-i]!=0)&&(board[xpos+i][ypos-i]!=-1)) {//Checks down left
         possible = true;
         while (board[xpos+i][ypos - i] != player) {
             if (board[xpos+i][ypos - i] == -1 || board[xpos+i][ypos - i] == 0) {
@@ -159,13 +158,13 @@ Available possibleMoves(int board[10][10], int xpos, int ypos, int player){     
     return isIt;
 }
 
-bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
-    if(board[xpos][ypos]!=0){
+bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){//A function just like the one above
+    if(board[xpos][ypos]!=0){                                          //This one doesn't return the direction
         return false;
     }
     int i = 1;
     bool possible=false;
-    if((board[xpos][ypos-i]!=player)&&(board[xpos][ypos-i]!=0)&&(board[xpos][ypos-i]!=-1)){//Checa las posiciones de la izquierda
+    if((board[xpos][ypos-i]!=player)&&(board[xpos][ypos-i]!=0)&&(board[xpos][ypos-i]!=-1)){//Checks left for an enemy piece
         possible=true;
         while (board[xpos][ypos-i]!=player){
             if(board[xpos][ypos-i]==-1 || board[xpos][ypos-i]==0){
@@ -179,7 +178,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
             return true;
         }
     }
-    if((board[xpos][ypos+i]!=player)&&(board[xpos][ypos+i]!=0)&&(board[xpos][ypos+i]!=-1)){//Checa las posiciones de la derecha
+    if((board[xpos][ypos+i]!=player)&&(board[xpos][ypos+i]!=0)&&(board[xpos][ypos+i]!=-1)){//Checks right
         possible = true;
         while (board[xpos][ypos + i] != player) {
             if (board[xpos][ypos + i] == -1 || board[xpos][ypos + i] == 0) {
@@ -193,7 +192,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
             return true;
         }
     }
-    if((board[xpos+i][ypos]!=player)&&(board[xpos+i][ypos]!=0)&&(board[xpos+i][ypos]!=-1)){//Checa las posiciones de abajo
+    if((board[xpos+i][ypos]!=player)&&(board[xpos+i][ypos]!=0)&&(board[xpos+i][ypos]!=-1)){//Checks down
         possible = true;
         while (board[xpos+i][ypos] != player) {
             if (board[xpos+i][ypos] == -1 || board[xpos+i][ypos] == 0) {
@@ -207,7 +206,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
             return true;
         }
     }
-    if((board[xpos-i][ypos]!=player)&&(board[xpos-i][ypos]!=0)&&(board[xpos-i][ypos]!=-1)) {//Checa las posiciones de arriba
+    if((board[xpos-i][ypos]!=player)&&(board[xpos-i][ypos]!=0)&&(board[xpos-i][ypos]!=-1)) {//Checks Up
         possible = true;
         while (board[xpos-i][ypos] != player) {
             if (board[xpos-i][ypos] == -1 || board[xpos-i][ypos] == 0) {
@@ -221,7 +220,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
             return true;
         }
     }
-    if((board[xpos-i][ypos-i]!=player)&&(board[xpos-i][ypos-i]!=0)&&(board[xpos-i][ypos-i]!=-1)) {//Checa las posiciones de arrba a las izquierda
+    if((board[xpos-i][ypos-i]!=player)&&(board[xpos-i][ypos-i]!=0)&&(board[xpos-i][ypos-i]!=-1)) {//Checks up left
         possible = true;
         while (board[xpos-i][ypos-i] != player) {
             if (board[xpos-i][ypos-i] == -1 || board[xpos-i][ypos-i] == 0) {
@@ -235,7 +234,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
             return true;
         }
     }
-    if((board[xpos+i][ypos+i]!=player)&&(board[xpos+i][ypos+i]!=0)&&(board[xpos+i][ypos+i]!=-1)) {//Checa las de abajo a la derecha
+    if((board[xpos+i][ypos+i]!=player)&&(board[xpos+i][ypos+i]!=0)&&(board[xpos+i][ypos+i]!=-1)) {//Checks down right
         possible = true;
         while (board[xpos+i][ypos + i] != player) {
             if (board[xpos+i][ypos + i] == -1 || board[xpos+i][ypos + i] == 0) {
@@ -249,7 +248,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
             return true;
         }
     }
-    if((board[xpos-i][ypos+i]!=player)&&(board[xpos-i][ypos+i]!=0)&&(board[xpos-i][ypos+i]!=-1)) {//Checa las de arriba a la derecha
+    if((board[xpos-i][ypos+i]!=player)&&(board[xpos-i][ypos+i]!=0)&&(board[xpos-i][ypos+i]!=-1)) {//Checks up right
         possible = true;
         while (board[xpos-i][ypos + i] != player) {
             if (board[xpos-i][ypos + i] == -1 || board[xpos-i][ypos + i] == 0) {
@@ -263,7 +262,7 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
             return true;
         }
     }
-    if((board[xpos+i][ypos-i]!=player)&&(board[xpos+i][ypos-i]!=0)&&(board[xpos+i][ypos-i]!=-1)) {//Checa las de abajo a la izquierda
+    if((board[xpos+i][ypos-i]!=player)&&(board[xpos+i][ypos-i]!=0)&&(board[xpos+i][ypos-i]!=-1)) {//Checks down left
         possible = true;
         while (board[xpos+i][ypos - i] != player) {
             if (board[xpos+i][ypos - i] == -1 || board[xpos+i][ypos - i] == 0) {
@@ -279,28 +278,28 @@ bool isPossibleMove(int board[10][10], int xpos, int ypos, int player){
     return possible;
 }
 
-int hasGameEnded(int board[10][10], int player, int check){
+int hasGameEnded(int board[10][10], int player, int check){//Recursive function that determines the state of the game
     for(int i = 1; i<9;i++){
         for(int n = 1; n<9;n++){
             if(isPossibleMove(board, i, n, player)==true){
-                return 0;
+                return 0;//If al least one move in the board is legal, returns 0, which is normal state
             }
         }
     }
-    if(check == 0){
-        if(hasGameEnded(board, changeTurn(player), 1)==0){
-            return 2;
-        }
+    if(check == 0){//If this is the first call of the function and there isn't a possible move
+        if(hasGameEnded(board, changeTurn(player), 1)==0){//Calls the function again
+            return 2;                                                      //But with the turn swapped and no check
+        }                                                                  //If there's a possible move, returns state 2
     }
-    return 3;
+    return 3;//If there is no move possible with the turns swapped, it means that the game has ended, returns 3
 }
 
-void makeMove(int board[10][10], int xpos, int ypos, int player, Available available){
+void makeMove(int board[10][10], int xpos, int ypos, int player, Available available){//Makes a move receiving the validation struct made in possible moves
     board[xpos][ypos]=player;
     int i = 1;
-    if(available.left==true){
+    if(available.left==true){//Checks if the struct received declares left as possible
         while(board[xpos][ypos-i]!= player){
-            board[xpos][ypos-i]=player;
+            board[xpos][ypos-i]=player;//Make every space from the initial position until it encounters another player piece, a player piece
             i++;
         }
         i = 1;
@@ -355,8 +354,7 @@ void makeMove(int board[10][10], int xpos, int ypos, int player, Available avail
     }
 }
 
-void printBoard(int board[10][10]){
-
+void printBoard(int board[10][10]){//Function used for debuging that prints the board in console
     for(int i = 1; i<9; i++){
         printf("%d |", i);
         for(int n = 1; n<9; n++){
@@ -379,43 +377,22 @@ void printBoard(int board[10][10]){
     printf("\n");
 }
 
-Stats checkWinner(int board[10][10]){
+Stats checkWinner(int board[10][10]){//Generates a struct that consists of the current stats of the game
     Stats winner={0, 0, };
     for(int i = 1; i <9; i++){
-        for(int n = 1; n<9; n++){
+        for(int n = 1; n<9; n++){//Checks all the board
             if(board[i][n]==1){
-                winner.bPieces++;
+                winner.bPieces++;//counts the pieces
             }
             else if(board[i][n]==2){
                 winner.wPieces++;
             }
         }
     }
-    if(winner.bPieces>winner.wPieces){
-        winner.Winner[0] = 'B';
-        winner.Winner[1] = 'l';
-        winner.Winner[2] = 'a';
-        winner.Winner[3] = 'c';
-        winner.Winner[4] = 'k';
-        winner.Winner[5] = '\0';
-    }else if(winner.wPieces>winner.bPieces){
-        winner.Winner[0] = 'W';
-        winner.Winner[1] = 'h';
-        winner.Winner[2] = 'i';
-        winner.Winner[3] = 't';
-        winner.Winner[4] = 'e';
-        winner.Winner[5] = '\0';
-    } else{
-        winner.Winner[0] = 'D';
-        winner.Winner[1] = 'r';
-        winner.Winner[2] = 'a';
-        winner.Winner[3] = 'w';
-        winner.Winner[4] = '\0';
-    }
     return winner;
 }
 
-void copyBoard(int board[10][10], int tempBoard[10][10]){
+void copyBoard(int board[10][10], int tempBoard[10][10]){//Simple function that copies board 1 into board 2
     for (int i = 1; i < 9; i++) {
         for (int n = 1; n < 9; n++) {
             tempBoard[i][n]=board[i][n];
@@ -423,94 +400,89 @@ void copyBoard(int board[10][10], int tempBoard[10][10]){
     }
 }
 
-int getValue(int board[10][10], Move move) {
-    int tempBoard[10][10];
+int getValue(int board[10][10], Move move) {//Part of the minimax algorithm, gets the value of a certain possible move
+    int tempBoard[10][10];//Generates a copy of the original board
     copyBoard(board, tempBoard);
     makeMove(tempBoard, move.x, move.y, 2, possibleMoves(tempBoard, move.x, move.y, 2));
-    Stats current = checkWinner(tempBoard);
+    Stats current = checkWinner(tempBoard);//Makes a hypothetical move on the temp board and generates the stats
     Move moves[64];
     int count = 0;
     for (int i = 1; i < 9; i++) {
         for (int n = 1; n < 9; n++) {
             if (isPossibleMove(tempBoard, i, n, 1) == true) {
                 Move moov = {i, n};
-                moves[count] = moov;
+                moves[count] = moov;//Registers all the possible move of the hypothetical outcome of that move
                 count++;
             }
         }
     }
-    int value = 0;
+    int value = 0;//Generates a value for the move
     int tempBoard2[10][10];
-    for (int i = 0; i < count; i++) {
-        copyBoard(tempBoard, tempBoard2);
+    for (int i = 0; i < count; i++) {//For every hypothetical move in our scenario
+        copyBoard(tempBoard, tempBoard2);//Generates another hypothetical move
         makeMove(tempBoard2, moves[i].x, moves[i].y, 1, possibleMoves(tempBoard2, move.x, move.y, 2));
-        Stats tempStats = checkWinner(tempBoard2);
-        int tempvalue = tempStats.wPieces - current.wPieces;
-        if (tempvalue < value) {
-            value = tempvalue;
+        Stats tempStats = checkWinner(tempBoard2);//gets the stats of the hypothetical of our hypothetical
+        int tempvalue = tempStats.wPieces - current.wPieces;//Generates a simple value
+        if (tempvalue < value) {//If the value of the move is better than the current
+            value = tempvalue;//Replaces the value, this value represents what's the best possible move that the rival can make
         }
     }
-    return value;
+    return value;//Returns the numerical value
 }
 
-Move getBestMove(int board[10][10], Move moves[64], int count){
+Move getBestMove(int board[10][10], Move moves[64], int count){//Defines the best possible move of an array of moves
     int currentValue;
-    Move bestMove={.x=-1, .y=-1, .value=-100};
+    Move bestMove={.x=-1, .y=-1, .value=-100};//Generates the struct to return
     int i = 0;
     Move moov;
-    while(i<count){
+    while(i<count){//For every move in the array
         moov = moves[i];
-        currentValue = getValue(board, moov);
-        if(currentValue>bestMove.value){
+        currentValue = getValue(board, moov);//Gets the numerical value of the move, this value is the value of the worst scenario if we make that move
+        if(currentValue>bestMove.value){//If the value is better than our current best move
             bestMove.x = moves[i].x;
             bestMove.y = moves[i].y;
-            bestMove.value = currentValue;
+            bestMove.value = currentValue;//Replaces it
         }
         i++;
     }
-    return bestMove;
+    return bestMove;//Returns the best move
 }
 
-Move minimaxMove(int board[10][10]){
+Move minimaxMove(int board[10][10]){//The main part of our minimax, is the one to call
     Move moves[64];
     Move bestMove;
     int count = 0;
     for(int i = 1; i<9; i++){
         for(int n = 1; n<9; n++){
-            if(isPossibleMove(board, i, n, 2)==true){
+            if(isPossibleMove(board, i, n, 2)==true){//Gets all the possible moves
                 Move moov = {i, n};
                 moves[count] = moov;
                 count++;
             }
         }
     }
-    bestMove = getBestMove(board, moves, count);
-    return bestMove;
+    bestMove = getBestMove(board, moves, count);//Calls the get best move, given the array that we made
+    return bestMove;//Returns the move to make
 }
 
-int mainGame(int board[10][10], int turn, int xpos, int ypos){
-    int state = hasGameEnded(board, turn, 0);
-    printf("State: %i\n", state);
+int mainGame(int board[10][10], int turn, int xpos, int ypos){//The main loop of the game
+    int state = hasGameEnded(board, turn, 0);//Gets the game state
     if(state==2){
         return changeTurn(turn);
     }
-    if(state!=3) {
-        if (turn == 2) {
+    if(state!=3) {//If the game has not ended
+        if (turn == 2) {//if it is the AI's turn
             Move move = minimaxMove(board);
-            makeMove(board, move.x, move.y, 2, possibleMoves(board, move.x, move.y, 2));
+            makeMove(board, move.x, move.y, 2, possibleMoves(board, move.x, move.y, 2));//Makes the move given the minimax move
             printBoard(board);
             turn = changeTurn(turn);
         }else {
-            makeMove(board, xpos, ypos, turn, possibleMoves(board, xpos, ypos, turn));
+            makeMove(board, xpos, ypos, turn, possibleMoves(board, xpos, ypos, turn));//If is the player's turn
             printBoard(board);
             turn = changeTurn(turn);
         }
     }
     if(state==3){
-        Stats stats = checkWinner(board);
-        printBoard(board);
-        printf("The game has ended \nWhite has %i pieces\nBlack has %i pieces\nThe winner is %s", stats.wPieces,
-               stats.bPieces, stats.Winner);
         return 3;
     }
     return turn;
@@ -532,6 +504,26 @@ void drawBoard(int width, int height){
 
 }
 
+int mouseValidation(int board[10][10],int y, int x, int height, int width){//Turns a mouse input into coordinates in the board
+    int hgap = (height-200)/8;
+    int wgap = (width-200)/8;
+    if((x>100 && x<height-100)&&(y>100 && y<width-100)){//If the mouse is in a legal position
+        x = ((x-100)/wgap)+1;
+        y = ((y-100)/hgap)+1;//gets the coordinates
+        printf("%d %d\n", x, y);
+        if(isPossibleMove(board, x, y, 1)){//If the move is possible
+            return mainGame(board, 1, x, y);//Calls the main game with the coordinates the player wants to use
+        } else{
+            return 1;//If it is not possible, returns the players turn, the loop continues until the player enters a valid input
+        }
+
+    } else{
+        return 1;
+    }
+}
+
+//All the functions from now on, are raylib functions
+
 void currentTurn(int turn, int height, int width){
     DrawRectangle(width-185, height-63, 185, 75, GRAY);
     DrawLine(width-185, height-63, width-185, height, WHITE);
@@ -546,23 +538,7 @@ void currentTurn(int turn, int height, int width){
     }
 }
 
-int mouseValidation(int board[10][10],int y, int x, int height, int width){
-    int hgap = (height-200)/8;
-    int wgap = (width-200)/8;
-    if((x>100 && x<height-100)&&(y>100 && y<width-100)){
-        x = ((x-100)/wgap)+1;
-        y = ((y-100)/hgap)+1;
-        printf("%d %d\n", x, y);
-        if(isPossibleMove(board, x, y, 1)){
-            return mainGame(board, 1, x, y);
-        } else{
-            return 1;
-        }
 
-    } else{
-        return 1;
-    }
-}
 
 void drawPieces(int board[10][10], int width, int height){
     int hgap = (height-200)/8;
@@ -626,6 +602,7 @@ void drawAvailableMoves(int board[10][10], int width, int height){
         }
     }
 }
+
 void displayNumberOfPieces(int board[10][10], int screenWidth, int screenHeight){
     Stats stats = checkWinner(board);
     int radius = (screenWidth-500)/8+7;
@@ -639,6 +616,7 @@ void displayNumberOfPieces(int board[10][10], int screenWidth, int screenHeight)
     sprintf(current, "x %d", stats.bPieces);
     DrawText(current, pos*5+radius+10, pos, 30, BLACK);
 }
+
 void DrawEndgame(int winner, int width, int height){
     if (winner ==1){
         DrawRectangle(width/2-85, height/2-50, 170, 100, BLACK);
@@ -652,3 +630,4 @@ void DrawEndgame(int winner, int width, int height){
     }
 
 }
+//Credits to https://github.com/MeDicenEdgar

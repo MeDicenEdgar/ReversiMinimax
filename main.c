@@ -3,7 +3,7 @@
 #include "raylib.h"
 #include "functions.h"
 int main() {
-    int board[10][10]={
+    int board[10][10]={//This is the board
             {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
             {-1,0,0,0,0,0,0,0,0,-1},
             {-1,0,0,0,0,0,0,0,0,-1},
@@ -16,7 +16,7 @@ int main() {
             {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}
     };
     const int screenWidth = 700;
-    const int screenHeight = 700;
+    const int screenHeight = 700;//We define the constants used for reylib
     InitWindow(screenWidth, screenHeight, "Reversi Game");
     SetTargetFPS(5);
     printBoard(board);
@@ -25,21 +25,21 @@ int main() {
     int end = 0;
     while(!WindowShouldClose()) {
 
-        if(turn == 1 && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-            turn = mouseValidation(board, GetMouseX(), GetMouseY(), screenHeight, screenWidth);
+        if(turn == 1 && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){//If it's players turn and the mouse is pressed
+            turn = mouseValidation(board, GetMouseX(), GetMouseY(), screenHeight, screenWidth);//Validates a player input
         }
-        else if(turn==2){
-            turn = mainGame(board, 2, 0, 0);
+        else if(turn==2){//If it's AI's turn
+            turn = mainGame(board, 2, 0, 0);//calls the game directly
         } else{
             if(hasGameEnded(board, 1, 0)==3){
-                turn = 3;
+                turn = 3;//Stops the loop. there is no condition for a turn = 3
                 end = endgame(board, checkWinner(board), screenWidth, screenHeight);
             }
             else if(hasGameEnded(board, 1, 0)==2){
                 turn = changeTurn(turn);
             }
         }
-        BeginDrawing();
+        BeginDrawing();//Raylib
         ClearBackground(BLACK);
         drawBoard(screenWidth, screenHeight);
         currentTurn(turn, screenHeight, screenWidth);
@@ -58,7 +58,7 @@ int main() {
     CloseWindow();
     return 0;
 }
-
+//Credits to https://github.com/MeDicenEdgar
 
 
 

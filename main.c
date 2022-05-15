@@ -18,7 +18,7 @@ int main() {
     const int screenWidth = 700;
     const int screenHeight = 700;//We define the constants used for reylib
     InitWindow(screenWidth, screenHeight, "Reversi Game");
-    SetTargetFPS(5);
+    SetTargetFPS(7);
     printBoard(board);
     int turn = 1;
     int state = 1;

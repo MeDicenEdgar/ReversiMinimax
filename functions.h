@@ -19,6 +19,27 @@ typedef struct struct_available{//This is a validation struct for possible moves
     bool possible;
 }Available;
 
+int changeTurn(int turn);
+Available possibleMoves(int board[10][10], int xpos, int ypos, int player);
+bool isPossibleMove(int board[10][10], int xpos, int ypos, int player);
+int hasGameEnded(int board[10][10], int player, int check);
+void makeMove(int board[10][10], int xpos, int ypos, int player, Available available);
+void printBoard(int board[10][10]);
+Stats checkWinner(int board[10][10]);
+void copyBoard(int board[10][10], int tempBoard[10][10]);
+int getValue(int board[10][10], Move move);
+Move getBestMove(int board[10][10], Move moves[64], int count);
+Move minimaxMove(int board[10][10]);
+int mainGame(int board[10][10], int turn, int xpos, int ypos);
+void drawBoard(int width, int height);
+int mouseValidation(int board[10][10],int y, int x, int height, int width);
+void currentTurn(int turn, int height, int width);
+void drawPieces(int board[10][10], int width, int height);
+int endgame(int board[10][10], Stats stats, int width, int height);
+void drawAvailableMoves(int board[10][10], int width, int height);
+void displayNumberOfPieces(int board[10][10], int screenWidth, int screenHeight);
+void DrawEndgame(int winner, int width, int height);
+
 int changeTurn(int turn){//Simple function that changes the turn, makes my life easier
     if(turn==1){
         return 2;
@@ -538,8 +559,6 @@ void currentTurn(int turn, int height, int width){
     }
 }
 
-
-
 void drawPieces(int board[10][10], int width, int height){
     int hgap = (height-200)/8;
     int wgap = (width-200)/8;
@@ -560,6 +579,7 @@ void drawPieces(int board[10][10], int width, int height){
         }
     }
 }
+
 int endgame(int board[10][10], Stats stats, int width, int height){
     if(stats.bPieces>stats.wPieces){
         for(int i = 1; i<9; i++){
